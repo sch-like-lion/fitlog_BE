@@ -28,7 +28,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t health-be:latest .
+          docker buildx create --use
+          docker buildx build --platform linux/arm64 -t health-be:latest . --load
           docker save health-be:latest > health-be.tar
 
       - name: Copy files to server

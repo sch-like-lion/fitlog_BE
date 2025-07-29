@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
   health-app:
-    build: .
+    image: health-be:latest
     container_name: health_be_app
     ports:
       - "8080:8080"
