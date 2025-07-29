@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  health-app:
+    build: .
+    container_name: health_be_app
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped
+    network_mode: host
