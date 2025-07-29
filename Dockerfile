@@ -1,5 +1,5 @@
 # 멀티스테이지 빌드를 사용하여 이미지 크기 최적화
-FROM gradle:7.6-jdk17 AS builder
+FROM gradle:8.5-jdk21 AS builder
 
 WORKDIR /app
 COPY build.gradle settings.gradle gradlew ./
@@ -10,7 +10,7 @@ COPY src ./src
 RUN ./gradlew build -x test
 
 # 실행용 경량 이미지
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
