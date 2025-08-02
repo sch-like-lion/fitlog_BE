@@ -15,11 +15,11 @@ public class mailVerificationService {
     private final mailVerificationDto mailDto = new mailVerificationDto();
 
     public String Sendmail(String email) { ///사용자 email
-        mailDto.setEmail(email);
+        SimpleMailMessage message = new SimpleMailMessage();
         Random code = new Random();
+        mailDto.setEmail(email);
         code.setSeed(System.currentTimeMillis());
         mailDto.setVerificationCode(String.valueOf(code.nextInt(9000)+1000));
-        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setFrom("fitlog0801@gmail.com");    //운영자로 사용할 이메일
         message.setSubject("이메일 인증번호입니다");
