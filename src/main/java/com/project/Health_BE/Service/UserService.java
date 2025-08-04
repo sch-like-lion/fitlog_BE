@@ -26,7 +26,7 @@ public class UserService {
         }
         Optional<UserEntity> user = userRepository.getUserByNickname(nickname);
         UserIdFindResponseDto responseDto = new UserIdFindResponseDto();
-        responseDto.setCustom_id(user.get().getCustom_id());
+        responseDto.setCustom_id(user.get().getCustomId());
         return responseDto;
     }
 
