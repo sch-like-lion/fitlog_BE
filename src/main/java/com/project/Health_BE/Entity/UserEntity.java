@@ -1,5 +1,6 @@
 package com.project.Health_BE.Entity;
 
+import com.project.Health_BE.Dto.SignupResponseDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Table(name="user")
 @Getter
 @NoArgsConstructor
-
 public class UserEntity {
 
     @Id
@@ -93,6 +93,4 @@ public class UserEntity {
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
     }
-
-
 }

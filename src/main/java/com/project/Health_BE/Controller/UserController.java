@@ -1,6 +1,11 @@
 package com.project.Health_BE.Controller;
 
+import com.project.Health_BE.Dto.SignupResponseDto;
 import com.project.Health_BE.Dto.UserIdFindResponseDto;
+import com.project.Health_BE.Dto.SignupRequestDto;
+import com.project.Health_BE.Exception.DuplicateCustomIdException;
+import com.project.Health_BE.Exception.DuplicateEmailException;
+import com.project.Health_BE.Exception.DuplicateNicknameException;
 import com.project.Health_BE.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +45,21 @@ public class UserController {
 
         Map<String, String> errorResponse = Collections.singletonMap("message", "이메일 인증이 되지 않았습니다.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @PostMapping("signup")
+    public ResponseEntity<?> userSignup(@RequestBody SignupRequestDto requestDto){
+        try {
+            SignupResponseDto responseDto = userService.Signup(requestDto);
+            return ResponseEntity.ok(responseDto);
+        } catch (DuplicateNicknameException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (DuplicateCustomIdException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (DuplicateEmailException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }
