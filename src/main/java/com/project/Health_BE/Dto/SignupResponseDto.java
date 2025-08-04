@@ -19,7 +19,7 @@ public class SignupResponseDto {
 
     public void DtofromEntity(UserEntity entity) {
         user_id = entity.getUser_id();
-        customId = entity.getCustom_id();
+        customId = entity.getCustomId();
         nickname = entity.getNickname();
         height = entity.getHeight();
         weight = entity.getWeight();
