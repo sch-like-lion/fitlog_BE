@@ -18,8 +18,8 @@ public class SignupResponseDto {
     private LocalDateTime updatedAt;
 
     public void DtofromEntity(UserEntity entity) {
-        user_id = entity.getUser_id();
-        customId = entity.getCustom_id();
+        user_id = entity.getUserId();
+        customId = entity.getCustomId();
         nickname = entity.getNickname();
         height = entity.getHeight();
         weight = entity.getWeight();
