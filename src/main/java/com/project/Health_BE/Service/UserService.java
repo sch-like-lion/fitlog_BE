@@ -26,7 +26,7 @@ public class UserService {
         }
         Optional<UserEntity> user = userRepository.getUserByNickname(nickname);
         UserIdFindResponseDto responseDto = new UserIdFindResponseDto();
-        responseDto.setCustom_id(user.get().getCustom_id());
+        responseDto.setCustom_id(user.get().getCustomId());
         return responseDto;
     }
 
@@ -38,6 +38,10 @@ public class UserService {
         } else if (userRepository.getUserByCustomId(requestDto.getCustomId()).isPresent()) {
             throw new DuplicateCustomIdException(requestDto.getCustomId());
         }/// 닉네임, 메일, 아이디 중복 예외 처리'
+
+        if(!requestDto.isMailcheck()) {
+            throw new IllegalArgumentException("이메일 인증이 안되어 있습니다.");
+        }
 
         String encrypted;
         try{
