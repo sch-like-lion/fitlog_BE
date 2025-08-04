@@ -1,4 +1,4 @@
-package com.project.Health_BE.service;
+package com.project.Health_BE.Service;
 
 import com.project.Health_BE.Dto.mailVerificationDto;
 import org.springframework.beans.factory.annotation.Autowired;

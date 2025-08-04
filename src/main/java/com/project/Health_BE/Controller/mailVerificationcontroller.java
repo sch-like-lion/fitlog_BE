@@ -1,9 +1,7 @@
-package com.project.Health_BE.controller;
+package com.project.Health_BE.Controller;
 
-import com.project.Health_BE.Dto.getCode;
-import com.project.Health_BE.Dto.getMail;
 import com.project.Health_BE.Dto.mailVerificationDto;
-import com.project.Health_BE.service.mailVerificationService;
+import com.project.Health_BE.Service.mailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +14,12 @@ public class mailVerificationcontroller {
     private final mailVerificationService mailVerificationService;
 
     @PostMapping("/api/email")
-    public String Sendmail(@RequestBody getMail email) {
-        return mailVerificationService.Sendmail(email.getEmail());
+    public String Sendmail(@RequestBody String email) {
+        return mailVerificationService.Sendmail(email);
     }
 
     @GetMapping("/api/email")
-    public mailVerificationDto Verificationmail(@RequestBody getCode code) {
-        return mailVerificationService.Verification(code.getCode());
+    public mailVerificationDto Verificationmail(@RequestBody String code) {
+        return mailVerificationService.Verification(code);
     }
 }
