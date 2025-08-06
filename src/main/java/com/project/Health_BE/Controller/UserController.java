@@ -1,19 +1,15 @@
 package com.project.Health_BE.Controller;
 
-import com.project.Health_BE.Dto.SignupResponseDto;
-import com.project.Health_BE.Dto.UserIdFindResponseDto;
-import com.project.Health_BE.Dto.SignupRequestDto;
+import com.project.Health_BE.Dto.*;
 import com.project.Health_BE.Exception.DuplicateCustomIdException;
 import com.project.Health_BE.Exception.DuplicateEmailException;
 import com.project.Health_BE.Exception.DuplicateNicknameException;
 import com.project.Health_BE.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -61,5 +57,27 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    // 비밀번호 찾기(재설정)
+    @PutMapping("reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDto dto) {
+        try {
+            userService.resetPasswordWithSHA256(dto.getEmail(), dto.getAuthCode(), dto.getNewPassword());
+            return ResponseEntity.ok(Collections.singletonMap("message", "비밀번호가 성공적으로 재설정되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "서버 오류가 발생했습니다."));
+        }
+    }
+
+    // 일반 로그인
+    @PostMapping("login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+        LoginResponseDto response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
