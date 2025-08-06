@@ -1,24 +1,27 @@
 package com.project.Health_BE.Service;
 
-import com.project.Health_BE.Dto.SignupRequestDto;
-import com.project.Health_BE.Dto.SignupResponseDto;
-import com.project.Health_BE.Dto.UserIdFindResponseDto;
+import com.project.Health_BE.Dto.*;
 import com.project.Health_BE.Entity.UserEntity;
-import com.project.Health_BE.Exception.DuplicateCustomIdException;
-import com.project.Health_BE.Exception.DuplicateEmailException;
-import com.project.Health_BE.Exception.DuplicateNicknameException;
+import com.project.Health_BE.Exception.*;
 import com.project.Health_BE.Repository.UserRepository;
+import com.project.Health_BE.Security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final mailVerificationService mailVerificationService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(UserRepository userRepository, mailVerificationService mailVerificationService, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.mailVerificationService = mailVerificationService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     public UserIdFindResponseDto findCustomIdByNickname(String nickname) {
         if (nickname == null || nickname.isEmpty()) {
@@ -63,5 +66,48 @@ public class UserService {
         SignupResponseDto responseDto = new SignupResponseDto();
         responseDto.DtofromEntity(entity);
         return responseDto;
+    }
+
+    // 비밀번호 찾기(초기화)
+    public void resetPasswordWithSHA256(String email, String authCode, String newPassword) {
+        mailVerificationDto resultDto = mailVerificationService.Verification(authCode);
+        if (!resultDto.isMailcheck()) {
+            throw new IllegalArgumentException("인증 코드가 유효하지 않습니다.");
+        }
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
+
+        try {
+            EncryptionService sha256 = new EncryptionService();
+            String encrypted = sha256.encrypt(newPassword);
+            user.updatePassword(encrypted);
+            userRepository.save(user);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("비밀번호 암호화 중 오류 발생", e);
+        }
+    }
+
+    // 일반 로그인
+    public LoginResponseDto login(LoginRequestDto request) {
+        String email = request.getEmail();
+        String rawPassword = request.getPassword();
+
+        // 1. 이메일에 해당하는 사용자 조회
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        // 2. 비밀번호 암호화 및 검증
+        EncryptionService sha256 = new EncryptionService();
+        String encryptedPassword = sha256.encrypt(rawPassword);
+
+        if (!user.getPassword().equals(encryptedPassword)) {
+            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. JWT 토큰 생성 및 응답 반환
+        String token = jwtTokenProvider.generateToken(user.getEmail());
+
+        return new LoginResponseDto("로그인 성공!", token);
     }
 }
