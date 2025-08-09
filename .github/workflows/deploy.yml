@@ -1,9 +1,7 @@
-name: Deploy to Raspberry Pi
+name: Deploy to Server
 
 on:
   push:
-    branches: [deploy]
-  pull_request:
     branches: [deploy]
 
 jobs:
