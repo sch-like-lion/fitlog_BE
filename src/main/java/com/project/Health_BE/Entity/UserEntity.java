@@ -1,5 +1,6 @@
 package com.project.Health_BE.Entity;
 
+import com.project.Health_BE.Dto.SignupResponseDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Table(name="user")
 @Getter
 @NoArgsConstructor
-
 public class UserEntity {
 
     @Id
@@ -20,8 +20,8 @@ public class UserEntity {
     @Column(nullable = false, name = "user_id")
     private Long user_id;
 
-    @Column(name = "custom_id")
-    private String custom_id;
+    @Column(name = "customId")
+    private String customId;
 
     @Column(name = "password")
     private String password;
@@ -57,7 +57,7 @@ public class UserEntity {
     private UserEntity(String custom_Id, String password, String nickname,
                        String email, String profile_image_url, String location,
                        String gender, Integer height, Integer weight) {
-        this.custom_id = custom_Id;
+        this.customId = custom_Id;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
@@ -93,6 +93,4 @@ public class UserEntity {
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
     }
-
-
 }
