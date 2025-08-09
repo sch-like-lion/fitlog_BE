@@ -17,12 +17,12 @@ public class JwtTokenProvider {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // 자동 생성 키
     }
 
-    public String generateToken(String userEmail) {
+    public String generateToken(String customId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .setSubject(userEmail)      // 사용자 이메일
+                .setSubject(customId)      // 사용자 이메일
                 .setIssuedAt(now)           // 토큰 발행 시간
                 .setExpiration(expiryDate)  // 토큰 만료 시간
                 .signWith(key)              // 서명
@@ -30,13 +30,13 @@ public class JwtTokenProvider {
     }
 
     // JWT에서 이메일 추출
-    public String getEmailFromToken(String token) {
+    public String getCustomIdFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject(); // 이메일 반환
+                .getSubject(); // customId 반환
     }
 
     // 토큰 유효성 검사
