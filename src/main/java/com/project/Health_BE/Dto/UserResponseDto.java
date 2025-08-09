@@ -6,7 +6,7 @@ import lombok.*;
 
 public class UserResponseDto {
 
-    private Long user_id;
+    private Long userId;
     private String customId;
     private String nickname;
     private String email;
@@ -17,9 +17,9 @@ public class UserResponseDto {
     private Integer weight;
     private String created_at;
 
-    public  UserResponseDto(Long user_id, String customId, String nickname, String email, String profile_image_url,
+    public  UserResponseDto(Long userId, String customId, String nickname, String email, String profile_image_url,
                             String location, String gender, Integer height, Integer weight, String created_at) {
-        this.user_id = user_id;
+        this.userId = userId;
         this.customId = customId;
         this.nickname = nickname;
         this.email = email;
