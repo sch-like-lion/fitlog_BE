@@ -90,14 +90,12 @@ public class UserService {
 
     // 일반 로그인
     public LoginResponseDto login(LoginRequestDto request) {
-        String email = request.getEmail();
+        String customId = request.getCustomId();
         String rawPassword = request.getPassword();
 
-        // 1. 이메일에 해당하는 사용자 조회
-        UserEntity user = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findByCustomId(customId)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
-        // 2. 비밀번호 암호화 및 검증
         EncryptionService sha256 = new EncryptionService();
         String encryptedPassword = sha256.encrypt(rawPassword);
 
@@ -105,8 +103,7 @@ public class UserService {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 3. JWT 토큰 생성 및 응답 반환
-        String token = jwtTokenProvider.generateToken(user.getEmail());
+        String token = jwtTokenProvider.generateToken(user.getCustomId());
 
         return new LoginResponseDto("로그인 성공!", token);
     }
