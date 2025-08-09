@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="user")
+@Table(name="users")
 @Getter
 @NoArgsConstructor
 public class UserEntity {
@@ -19,6 +20,8 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "user_id")
     private Long user_id;
+    @Column(nullable = false, name = "user_id", unique = true)
+    private Long userId;
 
     @Column(name = "customId")
     private String customId;
