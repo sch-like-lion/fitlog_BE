@@ -8,6 +8,8 @@ import com.project.Health_BE.Exception.DuplicateCustomIdException;
 import com.project.Health_BE.Exception.DuplicateEmailException;
 import com.project.Health_BE.Exception.DuplicateNicknameException;
 import com.project.Health_BE.Repository.UserRepository;
+import org.apache.catalina.User;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,5 +65,8 @@ public class UserService {
         SignupResponseDto responseDto = new SignupResponseDto();
         responseDto.DtofromEntity(entity);
         return responseDto;
+    }
+    public UserEntity findbyId(Long userId){
+        return userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 }

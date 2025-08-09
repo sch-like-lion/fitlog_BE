@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="user")
 @Table(name="users")
 @Getter
 @NoArgsConstructor
@@ -18,12 +17,10 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, name = "user_id")
-    private Long user_id;
     @Column(nullable = false, name = "user_id", unique = true)
     private Long userId;
 
-    @Column(name = "customId")
+    @Column(name = "customId", nullable = false, unique = true)
     private String customId;
 
     @Column(name = "password")
@@ -79,11 +76,19 @@ public class UserEntity {
                 .email(email)
                 .build();
     }
+    public static UserEntity createOAuthUser(String nickname, String email, String providerId){
+        return UserEntity.builder()
+                .nickname(nickname)
+                .email(email)
+                .custom_Id(providerId)
+                .build();
+    }
 
-    public void updateProfile(String nickname, String profile_image_url) {
+    public UserEntity updateProfile(String nickname, String profile_image_url) {
         this.nickname = nickname;
         this.profile_image_url = profile_image_url;
         this.updated_at = LocalDateTime.now();
+        return this;
     }
 
     @PrePersist
