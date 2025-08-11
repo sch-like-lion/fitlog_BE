@@ -1,26 +1,26 @@
 package com.project.Health_BE.Service;
 
-import com.project.Health_BE.Dto.SignupRequestDto;
-import com.project.Health_BE.Dto.SignupResponseDto;
-import com.project.Health_BE.Dto.UserIdFindResponseDto;
+import com.project.Health_BE.Dto.*;
 import com.project.Health_BE.Entity.UserEntity;
-import com.project.Health_BE.Exception.DuplicateCustomIdException;
-import com.project.Health_BE.Exception.DuplicateEmailException;
-import com.project.Health_BE.Exception.DuplicateNicknameException;
+import com.project.Health_BE.Exception.*;
 import com.project.Health_BE.Repository.UserRepository;
-import org.apache.catalina.User;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final mailVerificationService mailVerificationService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(UserRepository userRepository, mailVerificationService mailVerificationService, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.mailVerificationService = mailVerificationService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     public UserIdFindResponseDto findCustomIdByNickname(String nickname) {
         if (nickname == null || nickname.isEmpty()) {
@@ -66,7 +66,6 @@ public class UserService {
         responseDto.DtofromEntity(entity);
         return responseDto;
     }
-    public UserEntity findbyId(Long userId){
-        return userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
     }
 }
