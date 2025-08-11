@@ -4,7 +4,6 @@ import com.project.Health_BE.Dto.*;
 import com.project.Health_BE.Entity.UserEntity;
 import com.project.Health_BE.Exception.*;
 import com.project.Health_BE.Repository.UserRepository;
-import com.project.Health_BE.Security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,43 +67,5 @@ public class UserService {
         return responseDto;
     }
 
-    // 비밀번호 찾기(초기화)
-    public void resetPasswordWithSHA256(String email, String authCode, String newPassword) {
-        mailVerificationDto resultDto = mailVerificationService.Verification(authCode);
-        if (!resultDto.isMailcheck()) {
-            throw new IllegalArgumentException("인증 코드가 유효하지 않습니다.");
-        }
-
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 등록된 사용자가 없습니다."));
-
-        try {
-            EncryptionService sha256 = new EncryptionService();
-            String encrypted = sha256.encrypt(newPassword);
-            user.updatePassword(encrypted);
-            userRepository.save(user);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("비밀번호 암호화 중 오류 발생", e);
-        }
-    }
-
-    // 일반 로그인
-    public LoginResponseDto login(LoginRequestDto request) {
-        String customId = request.getCustomId();
-        String rawPassword = request.getPassword();
-
-        UserEntity user = userRepository.findByCustomId(customId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-
-        EncryptionService sha256 = new EncryptionService();
-        String encryptedPassword = sha256.encrypt(rawPassword);
-
-        if (!user.getPassword().equals(encryptedPassword)) {
-            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
-        }
-
-        String token = jwtTokenProvider.generateToken(user.getCustomId());
-
-        return new LoginResponseDto("로그인 성공!", token);
     }
 }
