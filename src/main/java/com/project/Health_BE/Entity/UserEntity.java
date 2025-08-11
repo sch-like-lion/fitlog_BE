@@ -91,6 +91,10 @@ public class UserEntity {
         return this;
     }
 
+    public void updatePassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.created_at = LocalDateTime.now();
