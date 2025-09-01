@@ -41,6 +41,10 @@ public class UserService {
             throw new DuplicateCustomIdException(requestDto.getCustomId());
         }/// 닉네임, 메일, 아이디 중복 예외 처리'
 
+        if(!requestDto.isMailcheck()) {
+            throw new IllegalArgumentException("이메일 인증이 안되어 있습니다.");
+        }
+
         String encrypted;
         try{
             EncryptionService sha256 = new EncryptionService();
