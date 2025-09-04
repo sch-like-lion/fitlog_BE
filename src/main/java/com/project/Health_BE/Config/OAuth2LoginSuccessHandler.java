@@ -31,8 +31,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         UserEntity user = oAuth2User.getUser();
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getUserId());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getUserId());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getUserId().toString(), user.getEmail(), user.getRole().getKey());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getUserId().toString());
 
         refreshTokenService.saveOrUpdateRefreshToken(response, user, refreshToken);
 

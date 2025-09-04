@@ -22,8 +22,8 @@ public class TokenService {
         }
         RefreshTokenEntity refreshTokenFromDb=refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 리프레시 토큰입니다."));
-        Long userId = refreshTokenFromDb.getUser().getUserId();
-        UserEntity user=userService.findbyId(userId);
-        return jwtTokenProvider.generateAccessToken(user.getEmail(), user.getUserId());
+        UserEntity user = refreshTokenFromDb.getUser(); // RefreshTokenEntity에서 직접 UserEntity를 가져옴
+
+        return jwtTokenProvider.generateAccessToken(user.getUserId().toString(), user.getEmail(), user.getRole().getKey());
     }
 }
