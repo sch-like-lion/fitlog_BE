@@ -28,8 +28,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        //requestmatcher에 등록된 api는 인증 없이 접근 가능 -> 인증 없이 접근 할 수 있어야 하는 페이지는 추가해주세요 
-                        // 테스트시 .anyrequest줄(33) 주석 후 테스트하면 됩니다
+                        //requestmatcher에 등록된 api는 인증 없이 접근 가능 -> 인증 없이 접근 할 수 있어야 하는 페이지는 추가해주세요
                         .requestMatchers("/api/users/signup", "/api/users/login", "/api/token", "/login/**", "/oauth2/**", "/oauth-success","/oauth2/authorization/**").permitAll()
                         .anyRequest().authenticated()
                 ).oauth2Login(oauth2 -> oauth2
