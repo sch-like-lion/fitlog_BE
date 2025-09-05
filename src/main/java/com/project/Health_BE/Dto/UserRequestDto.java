@@ -10,5 +10,5 @@ public class UserRequestDto {
     private String password;
     private String nickname;
     private String email;
-    private Long user_id;
+    private Long userId;
 }
