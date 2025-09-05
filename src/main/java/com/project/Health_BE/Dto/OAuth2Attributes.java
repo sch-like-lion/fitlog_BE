@@ -1,5 +1,6 @@
 package com.project.Health_BE.Dto;
 
+import com.project.Health_BE.Entity.Role;
 import com.project.Health_BE.Entity.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +33,8 @@ public class OAuth2Attributes {
         }
         return ofGoogle(userNameAttributeName, attributes);
     }
-    //구글 사용자 가져오기
+
+    @SuppressWarnings("unchecked")
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         String email = (String) attributes.get("email");
         String providerId = (String) attributes.get(userNameAttributeName);
@@ -47,7 +49,7 @@ public class OAuth2Attributes {
                 .nameAttributeKey(userNameAttributeName)
                 .build();
     }
-    //카카오 사용자 가져오기
+
     private static OAuth2Attributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = kakaoAccount != null ? (Map<String, Object>) kakaoAccount.get("profile") : null;
@@ -75,6 +77,7 @@ public class OAuth2Attributes {
                 .profile_image_url(null)
                 .custom_Id(provider + "_" + providerId)
                 .password(UUID.randomUUID().toString())
+                .role(Role.USER) // <-- 이 한 줄을 추가하여 컴파일 오류를 해결합니다.
                 .build();
     }
 }
