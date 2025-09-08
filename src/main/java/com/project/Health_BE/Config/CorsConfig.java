@@ -1,4 +1,4 @@
-package com.project.Health_BE.global;
+package com.project.Health_BE.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
                 /// 현재 어떤 주소 사용중인지 모름 임시로 넣어둔것
-                .allowedOrigins("https://fitlog.iubns.net")
+                .allowedOrigins("https://fitlog.iubns.net", "https://localhost:3000")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                 .allowCredentials(true)
                 .maxAge(3000);
