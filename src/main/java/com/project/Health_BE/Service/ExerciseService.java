@@ -1,9 +1,6 @@
 package com.project.Health_BE.Service;
 
-import com.project.Health_BE.Dto.ExerciseCategoryDto;
-import com.project.Health_BE.Dto.ExerciseDto;
-import com.project.Health_BE.Dto.ExerciseLogRequestDto;
-import com.project.Health_BE.Dto.ExerciseSetDto;
+import com.project.Health_BE.Dto.*;
 import com.project.Health_BE.Entity.Exercise;
 import com.project.Health_BE.Entity.ExerciseLog;
 import com.project.Health_BE.Entity.ExerciseSetLog;
@@ -17,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,5 +67,14 @@ public class ExerciseService {
 
         ExerciseLog savedLog = exerciseLogRepository.save(exerciseLog);
         return savedLog.getLogId();
+    }
+
+    public List<ExerciseLogResponseDto> getExerciseLogsByDate(String userId, LocalDate date) {
+        UserEntity user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+
+        return exerciseLogRepository.findByUser_UserIdAndDate(user.getUserId(), date).stream()
+                .map(ExerciseLogResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
