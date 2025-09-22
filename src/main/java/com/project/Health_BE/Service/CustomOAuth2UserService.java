@@ -23,23 +23,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        // 1. 기본 OAuth2User 정보를 가져옵니다.
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // 2. 서비스 제공자(google, kakao 등) ID와 사용자 이름 속성을 가져옵니다.
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        // 3. 제공자별로 속성을 파싱하는 DTO를 사용합니다.
         OAuth2Attributes attributes = OAuth2Attributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        // 4. 이메일로 기존 사용자인지, 신규 사용자인지 확인합니다.
         UserEntity user = userRepository.getUserByEmail(attributes.getEmail())
                 .map(entity -> entity.updateProfile(attributes.getName(), null))
                 .orElseGet(() -> userRepository.save(attributes.toEntity(registrationId)));
 
-        // 5. CustomOAuth2User 객체를 생성하여 반환합니다.
         return new CustomOAuth2User(user, attributes.getAttributes());
     }
 }
