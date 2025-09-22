@@ -54,6 +54,7 @@ jobs:
             DB_USERNAME=${{ secrets.DB_USERNAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             APP_PASSWORD=${{ secrets.APP_PASSWORD }}
+            APP_JWT_SECRET=${{ secrets.APP_JWT_SECRET }}
             EOF
 
       - name: Deploy on server
