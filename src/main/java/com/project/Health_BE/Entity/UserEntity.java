@@ -17,8 +17,9 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, name = "userId")
+    @Column(nullable = false, name = "user_id", unique = true)
     private Long userId;
+
     @Column(name = "customId", nullable = false, unique = true)
     private String customId;
 
@@ -46,6 +47,9 @@ public class UserEntity {
     @Column(name = "weight")
     private Integer weight;
 
+    @Column(name = "total_point")
+    private Integer totalPoint;
+
     @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
     @Column(nullable = false)    // Role 필드 추가
     private Role role;
@@ -59,7 +63,7 @@ public class UserEntity {
     @Builder
     private UserEntity(String custom_Id, String password, String nickname,
                        String email, String profile_image_url, String location,
-                       String gender, Integer height, Integer weight, Role role) { // 생성자에 role 추가
+                       Integer totalPoint,String gender, Integer height, Integer weight, Role role) { // 생성자에 role 추가
         this.customId = custom_Id;
         this.password = password;
         this.nickname = nickname;
@@ -69,6 +73,7 @@ public class UserEntity {
         this.gender = gender;
         this.height = height;
         this.weight = weight;
+        this.totalPoint = (totalPoint != null) ? totalPoint : 0;
         this.role = (role != null) ? role : Role.USER; // 기본값 설정
         this.created_at = LocalDateTime.now();
         this.updated_at = LocalDateTime.now();
@@ -114,7 +119,7 @@ public class UserEntity {
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
     }
-    
+
     // OAuth2 로그인 시 사용자의 이름이나 프로필 이미지가 변경되었을 경우를 대비하여 업데이트하는 메소드
     public UserEntity updateOAuthInfo(String nickname, String profile_image_url) {
         this.nickname = nickname;

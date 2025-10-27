@@ -23,7 +23,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
-    @Value("${app.oauth.redirect-uri}")
+    @Value("${app_oauth_redirect_uri}")
     private String redirectUri;
 
     @Override
