@@ -102,4 +102,9 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
+    public Long getUserId(String token) {
+        Claims claims = getClaims(token);
+        return Long.parseLong(claims.getSubject());
+    }
+
 }
