@@ -8,6 +8,7 @@ build/
 data.sql
 
 ### STS ###
+.env
 .apt_generated
 .classpath
 .factorypath

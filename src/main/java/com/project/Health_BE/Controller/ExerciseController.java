@@ -1,48 +1,48 @@
 package com.project.Health_BE.Controller;
 
-import com.project.Health_BE.Dto.ExerciseCategoryDto;
-import com.project.Health_BE.Dto.ExerciseDto;
-import com.project.Health_BE.Dto.ExerciseLogRequestDto;
-import com.project.Health_BE.Dto.ExerciseLogResponseDto;
-import com.project.Health_BE.Service.ExerciseService;
+import com.project.Health_BE.Dto.CalenderDto;
+import com.project.Health_BE.Dto.CalenderGet;
+import com.project.Health_BE.Exception.UserNotFoundException;
+import com.project.Health_BE.Service.CalenderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Collections;
 
-@RestController
-@RequestMapping("/api/exercise")
+@Controller
 @RequiredArgsConstructor
 public class ExerciseController {
+    private final CalenderService calenderService;
 
-    private final ExerciseService exerciseService;
-
-    @GetMapping("/categories")
-    public ResponseEntity<List<ExerciseCategoryDto>> getAllCategories() {
-        return ResponseEntity.ok(exerciseService.getAllCategories());
+    @PostMapping("/api/calender")
+    public ResponseEntity<?> postcalender(@RequestBody CalenderDto request) {
+        try{
+            return ResponseEntity.ok(Collections.singletonMap("message", "기록성공 userId: "+calenderService.post(request).toString()));
+        }
+        catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", e.getMessage()));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("type", "입력 자료형이 잘못됨"));
+        }
     }
 
-    @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByCategory(@PathVariable Long categoryId) {
-        return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
-    }
-
-    @PostMapping("/log")
-    public ResponseEntity<Long> saveExerciseLog(@RequestBody ExerciseLogRequestDto requestDto, @AuthenticationPrincipal User user) {
-        Long logId = exerciseService.saveExerciseLog(requestDto, user.getUsername());
-        return ResponseEntity.ok(logId);
-    }
-
-    @GetMapping("/log/{date}")
-    public ResponseEntity<List<ExerciseLogResponseDto>> getExerciseLogsByDate(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @AuthenticationPrincipal User user) {
-        List<ExerciseLogResponseDto> logs = exerciseService.getExerciseLogsByDate(user.getUsername(), date);
-        return ResponseEntity.ok(logs);
+    @GetMapping("/api/calender")
+    public ResponseEntity<?> getcalender(@RequestParam CalenderGet request) {
+        try {
+            return ResponseEntity.ok(calenderService.get(request));
+        }
+        catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", e.getMessage()));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", "서버 에러"));
+        }
     }
 }

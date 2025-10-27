@@ -31,6 +31,9 @@ public class ExerciseLog {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Column(name = "time")
+    private int extime;
+
     @Column(name = "memo")
     private String memo;
 
@@ -44,10 +47,11 @@ public class ExerciseLog {
     private List<ExerciseSetLog> exerciseSetLogs = new ArrayList<>();
 
     @Builder
-    public ExerciseLog(UserEntity user, Exercise exercise, LocalDate date, String memo, int fatigueLevel) {
+    public ExerciseLog(UserEntity user, Exercise exercise, LocalDate date, int extime, String memo, int fatigueLevel) {
         this.user = user;
         this.exercise = exercise;
         this.date = date;
+        this.extime = extime;
         this.memo = memo;
         this.fatigueLevel = fatigueLevel;
         this.createdAt = LocalDateTime.now();
