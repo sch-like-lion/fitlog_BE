@@ -4,6 +4,9 @@ services:
     container_name: health_be_app
     ports:
       - "8080:8080"
+
+    env_file:
+        - .env
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
