@@ -55,6 +55,12 @@ jobs:
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             APP_PASSWORD=${{ secrets.APP_PASSWORD }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
+            APP_REDIRECT_URI=${{ secrets.APP_REDIRECT_URI }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
             EOF
 
       - name: Deploy on server
