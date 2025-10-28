@@ -6,7 +6,7 @@ import com.project.Health_BE.Dto.CalenderResponseDto;
 import com.project.Health_BE.Entity.ExerciseLog;
 import com.project.Health_BE.Entity.ExerciseSetLog;
 import com.project.Health_BE.Exception.UserNotFoundException;
-import com.project.Health_BE.Repository.ExerciseLogReposiroty;
+import com.project.Health_BE.Repository.ExerciseLogRepository;
 import com.project.Health_BE.Repository.ExerciseRepository;
 import com.project.Health_BE.Repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,12 @@ import java.math.BigDecimal;
 @Service
 @Transactional
 public class CalenderService {
-    private final ExerciseLogReposiroty exerciseLogReposiroty;
     private final UserRepository userRepository;
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseLogRepository exerciseLogRepository;
 
-    public CalenderService(ExerciseLogReposiroty ex, UserRepository ur, ExerciseRepository er) {
-        this.exerciseLogReposiroty = ex;
+    public CalenderService(ExerciseLogRepository ex, UserRepository ur, ExerciseRepository er) {
+        this.exerciseLogRepository = ex;
         this.userRepository = ur;
         this.exerciseRepository = er;
     }
@@ -31,12 +31,12 @@ public class CalenderService {
         try {
             if(userRepository.findById(dto.getUserId()).isEmpty())
                 throw new UserNotFoundException("존재하지 않는 userId");
-            if(exerciseRepository.findbyname(dto.getExercise()).isEmpty())
+            if(exerciseRepository.findByName(dto.getExercise()).isEmpty())
                 throw new UserNotFoundException("존재하지 않는 Exercise");
             ExerciseLog Entity = new ExerciseLog()
                     .builder()
                     .user(userRepository.findById(dto.getUserId()).get())
-                    .exercise(exerciseRepository.findbyname(dto.getExercise()).get())
+                    .exercise(exerciseRepository.findByName(dto.getExercise()).get())
                     .date(dto.getDate())
                     .extime(dto.getTime())
                     .memo(dto.getMemo())
@@ -51,7 +51,7 @@ public class CalenderService {
                         .build();
                 Entity.addExerciseSetLog(log);
             }
-            exerciseLogReposiroty.save(Entity);
+            exerciseLogRepository.save(Entity);
             return dto.getUserId();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -60,9 +60,9 @@ public class CalenderService {
 
     public CalenderResponseDto get(CalenderGet request) {
         try {
-            if(exerciseLogReposiroty.findbydate(request.getDate()).isEmpty())
+            if(exerciseLogRepository.findByDate(request.getDate()).isEmpty())
                 throw new UserNotFoundException(request.getDate().toString()+"의 일정은 저장되어 있지 않습니다.");
-            ExerciseLog entity = exerciseLogReposiroty.findbydate(request.getDate()).get();
+            ExerciseLog entity = exerciseLogRepository.findByDate(request.getDate()).get();
             int grass = entity.getExtime() / 100;
             if(grass > 100) grass = 100;
             return CalenderResponseDto
