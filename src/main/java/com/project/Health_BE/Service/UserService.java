@@ -63,6 +63,7 @@ public class UserService {
                 .password(encrypted)
                 .height(requestDto.getHeight())
                 .weight(requestDto.getWeight())
+                .totalPoint(0) // 회원가입 시 초기 total_point 설정
                 .role(Role.USER)  // 새로운 사용자의 역할을 명시적으로 지정
                 .build();
         userRepository.save(entity);
