@@ -34,4 +34,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>{
     )
     Long findRankInTier(@Param("userId") Long userId, @Param("minPoint") int minPoint, @Param("maxPoiSnt") int maxPoint);
 
+    //전체 랭킹
+    Long countByTotalPointGreaterThan(Integer totalPoint);
+
+    @Override
+    long count();
+//지역 랭킹
+    Long countByLocationAndTotalPointGreaterThan(String location, Integer totalPoint);
+    Long countByLocation(String location);
 }

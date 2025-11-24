@@ -42,7 +42,7 @@ public class UserController {
         Map<String, String> errorResponse = Collections.singletonMap("message", "이메일 인증이 되지 않았습니다.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-
+    //회원가입
     @PostMapping("signup")
     public ResponseEntity<?> userSignup(@RequestBody SignupRequestDto requestDto){
         try {

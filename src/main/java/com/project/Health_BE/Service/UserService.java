@@ -1,9 +1,11 @@
 package com.project.Health_BE.Service;
 
 import com.project.Health_BE.Dto.*;
+import com.project.Health_BE.Entity.Emailverification;
 import com.project.Health_BE.Entity.Role;
 import com.project.Health_BE.Entity.UserEntity;
 import com.project.Health_BE.Exception.*;
+import com.project.Health_BE.Repository.EmailverificatonRepository;
 import com.project.Health_BE.Repository.UserRepository;
 import com.project.Health_BE.Security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-    private final mailVerificationService mailVerificationService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final EmailverificatonRepository emailRepository;
 
-    public UserService(UserRepository userRepository, mailVerificationService mailVerificationService, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, EmailverificatonRepository emailRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
-        this.mailVerificationService = mailVerificationService;
+        this.emailRepository = emailRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -38,13 +40,13 @@ public class UserService {
     public SignupResponseDto Signup(SignupRequestDto requestDto) {
         if (userRepository.getUserByNickname(requestDto.getNickname()).isPresent()) {
             throw new DuplicateNicknameException(requestDto.getNickname());
-        } else if (userRepository.getUserByEmail(requestDto.getEmail()).isPresent()) {
+        } else if (userRepository.getUserByEmail(requestDto.getEmail()).isPresent() || emailRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new DuplicateEmailException(requestDto.getEmail());
         } else if (userRepository.getUserByCustomId(requestDto.getCustomId()).isPresent()) {
             throw new DuplicateCustomIdException(requestDto.getCustomId());
         }
-
-        if(!requestDto.isMailcheck()) {
+        Emailverification emailentity = emailRepository.findByEmail(requestDto.getEmail()).get();
+        if(!emailentity.isVerify()) {
             throw new IllegalArgumentException("이메일 인증이 안되어 있습니다.");
         }
 
@@ -78,8 +80,11 @@ public class UserService {
     }
 
     public void resetPasswordWithSHA256(String email, String authCode, String newPassword) {
-        mailVerificationDto resultDto = mailVerificationService.Verification(authCode);
-        if (!resultDto.isMailcheck()) {
+        mailVerificationDto dto = new mailVerificationDto();
+        Emailverification entity = emailRepository.findByEmail(email).get();
+        dto.setVerificationCode(authCode);
+        dto.setEmail(email);
+        if (!entity.isVerify()) {
             throw new IllegalArgumentException("인증 코드가 유효하지 않습니다.");
         }
 

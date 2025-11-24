@@ -127,4 +127,11 @@ public class UserEntity {
         this.updated_at = LocalDateTime.now();
         return this;
     }
+    public void deductPoints(int amount) {
+        if (this.totalPoint < amount) {
+            throw new IllegalStateException("포인트가 부족합니다.");
+        }
+        this.totalPoint -= amount;
+    }
+
 }

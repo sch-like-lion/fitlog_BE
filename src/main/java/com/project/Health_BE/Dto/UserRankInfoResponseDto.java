@@ -18,7 +18,7 @@ public class UserRankInfoResponseDto {
     private String tierImageUrl;
     private Long overallRank;
     private Long rankInTier;
-
+//todo: 승준  - dto 수정 필요
     public UserRankInfoResponseDto(UserEntity user, RankEntity tier, Long overallRank, Long rankInTier) {
         this.userId = user.getUserId();
         this.nickname = user.getNickname();

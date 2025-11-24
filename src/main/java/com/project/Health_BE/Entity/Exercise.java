@@ -29,4 +29,18 @@ public class Exercise {
     public enum UnitType {
         WEIGHT, REPS, TIME
     }
+
+    // 관리자 메뉴용 //
+    // 운동 생성용
+    public Exercise(ExerciseCategory exerciseCategory, String name, UnitType unitType) {
+        this.exerciseCategory = exerciseCategory;
+        this.name = name;
+        this.unitType = unitType;
+    }
+    // 운동 업데이트용
+    public void update(ExerciseCategory exerciseCategory, String name, UnitType unitType) {
+        this.exerciseCategory = exerciseCategory;
+        this.name = name;
+        this.unitType = unitType;
+    }
 }
