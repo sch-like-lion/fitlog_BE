@@ -37,6 +37,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //requestmatcher에 등록된 api는 인증 없이 접근 가능 -> 인증 없이 접근 할 수 있어야 하는 페이지는 추가해주세요
                         .requestMatchers("/api/users/signup", "/api/users/login", "/api/token", "/api/rank/**", "/login/**", "/oauth2/**", "/oauth-success","/oauth2/authorization/**", "/api/email", "/api/email/**").permitAll()
+                        // /api/admin/** 경로는 "ROLE_ADMIN" 권한이 필요
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 ).oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorization -> authorization
