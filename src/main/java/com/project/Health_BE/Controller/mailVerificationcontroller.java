@@ -19,7 +19,7 @@ public class mailVerificationcontroller {
     }
 
     @GetMapping("/api/email")
-    public mailVerificationDto Verificationmail(@RequestBody String code) {
-        return mailVerificationService.Verification(code);
+    public mailVerificationDto Verificationmail(@RequestBody mailVerificationDto request) {
+        return mailVerificationService.Verification(request);
     }
 }
