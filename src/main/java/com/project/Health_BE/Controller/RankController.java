@@ -23,8 +23,15 @@ public class RankController {
     }
 
     @GetMapping("overall")
-    public ResponseEntity<UserRankInfoResponseDto> getUserOverAllRank(@RequestHeader("Authorization") String authorization) {
-        UserRankInfoResponseDto rankInfo = rankService.getUserRankInfo(authorization);
+    public ResponseEntity<UserRankInfoResponseDto> getUserOverAllRank(@RequestHeader("Authorization") String authorization,
+                                                                      @RequestParam(value = "myRegion", required = false) Boolean myRegion) {
+        UserRankInfoResponseDto rankInfo;
+        if (Boolean.TRUE.equals(myRegion)) {
+            rankInfo = rankService.getUserRankInfoByLocation(authorization);
+        }else {
+            rankInfo = rankService.getOverallRank(authorization);
+        }
         return ResponseEntity.ok(rankInfo);
     }
+
 }
