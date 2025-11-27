@@ -2,6 +2,7 @@ package com.project.Health_BE.Config;
 
 import com.project.Health_BE.Security.JwtTokenProvider;
 import com.project.Health_BE.Service.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,13 +35,24 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"error\": \"로그인이 필요합니다.\", \"message\": \"" + authException.getMessage() + "\"}");
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         //requestmatcher에 등록된 api는 인증 없이 접근 가능 -> 인증 없이 접근 할 수 있어야 하는 페이지는 추가해주세요
-                        .requestMatchers("/api/users/signup", "/api/users/login", "/api/token", "/api/rank/**", "/login/**", "/oauth2/**", "/oauth-success","/oauth2/authorization/**", "/api/email", "/api/email/**").permitAll()
+                        .requestMatchers("/api/users/signup", "/api/users/login", "/api/token", "/api/email/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api-docs").permitAll()
                         // /api/admin/** 경로는 "ROLE_ADMIN" 권한이 필요
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        //인증이 필요하지만 모든 권한이 허용되는 경로
+                        .requestMatchers("/api/rank/**").authenticated()
                         .anyRequest().authenticated()
-                ).oauth2Login(oauth2 -> oauth2
+                )
+                .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorization -> authorization
                                 .authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository()))
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
