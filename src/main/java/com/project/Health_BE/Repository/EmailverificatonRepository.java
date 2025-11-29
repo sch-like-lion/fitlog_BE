@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmailverificatonRepository extends JpaRepository<Emailverification, String> {
+public interface EmailverificatonRepository extends JpaRepository<Emailverification, Long> {
     Optional<Emailverification> findByEmail(String email);
 }

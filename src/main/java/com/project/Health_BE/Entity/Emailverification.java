@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 public class Emailverification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
     @Column(name = "email")
     private String email;
     private String code;
