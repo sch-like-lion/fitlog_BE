@@ -61,8 +61,10 @@ public class mailVerificationService {
 
         Emailverification entity = emailRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new UserNotFoundException("email을 찾을 수 없습니다."));
         if (ChronoUnit.MINUTES.between(entity.getUpdatetime(), LocalDateTime.now()) > 5) throw new RuntimeException("인증코드가 만료되었습니다."); ///사용자가 입력한 코드 받기
-        if(dto.getVerificationCode().equals(dto.getVerificationCode())) {
-            entity.builder().verify(true).updatetime(LocalDateTime.now()).code(null);
+        if(dto.getVerificationCode().equals(entity.getCode())) {
+            entity.setVerify(true);
+            entity.setUpdatetime(LocalDateTime.now());
+            entity.setCode(null);
             emailRepository.save(entity);
             dto.setMailcheck(true);
             return dto;
